@@ -1,36 +1,172 @@
 #include "Pixel.hpp"
 
-
-Pixel Pixel::operator+(const Pixel& p1) 
+Pixel::Pixel(float r, float g, float b, float a)
+    : A(a), R(r), G(g), B(b)
 {
-	 Pixel res = Pixel(this->R + p1.R, this->G + p1.G, this->B + p1.B);
-	 return res;
 }
 
-Pixel Pixel::operator*(const Pixel& p1)
+Pixel::Pixel(const Pixel& other)
+    : A(other.A),
+      R(other.R),
+      G(other.G),
+      B(other.B)
 {
-	Pixel res = Pixel(this->R * p1.R / 255, this->G * p1.G / 255, this->B * p1.B / 255);
-	return res;
 }
 
-Pixel& Pixel::operator=(const Pixel& p1)
+float Pixel::GetA() const
 {
-	if (this != &p1)
-	{
-		R = p1.R;
-		G = p1.G;
-		B = p1.B;
-	}
-	return *this;
+    return A;
 }
 
-void Pixel::normal()
+float Pixel::GetR() const
 {
-	if (R - '0' > 255) R = 255;
-	if (G - '0' > 255) G = 255;
-	if (B - '0' > 255) B = 255;
-	if (R - '0' < 0) R = 0 + '0';
-	if (G - '0' < 0) G = 0 + '0';
-	if (B - '0' < 0) B = 0 + '0';
+    return R;
 }
 
+float Pixel::GetG() const
+{
+    return G;
+}
+
+float Pixel::GetB() const
+{
+    return B;
+}
+
+void Pixel::SetA(float a)
+{
+    A = a;
+}
+
+void Pixel::SetR(float r)
+{
+    R = r;
+}
+
+void Pixel::SetG(float g)
+{
+    G = g;
+}
+
+void Pixel::SetB(float b)
+{
+    B = b;
+}
+
+Pixel Pixel::operator+(const Pixel& other) const
+{
+    return Pixel(
+        R + other.R,
+        G + other.G,
+        B + other.B,
+        A + other.A
+    );
+}
+
+Pixel Pixel::operator-(const Pixel& other) const
+{
+    return Pixel(
+        R - other.R,
+        G - other.G,
+        B - other.B,
+        A - other.A
+    );
+}
+
+Pixel Pixel::operator*(const Pixel& other) const
+{
+    return Pixel(
+        R * other.R,
+        G * other.G,
+        B * other.B,
+        A * other.A
+    );
+}
+
+Pixel Pixel::operator*(float scalar) const
+{
+    return Pixel(
+        R * scalar,
+        G * scalar,
+        B * scalar,
+        A * scalar
+    );
+}
+
+Pixel Pixel::operator/(float scalar) const
+{
+    return Pixel(
+        R / scalar,
+        G / scalar,
+        B / scalar,
+        A / scalar
+    );
+}
+
+Pixel& Pixel::operator=(const Pixel& other)
+{
+    if (this != &other)
+    {
+        A = other.A;
+        R = other.R;
+        G = other.G;
+        B = other.B;
+    }
+
+    return *this;
+}
+
+Pixel& Pixel::operator+=(const Pixel& other)
+{
+    R += other.R;
+    G += other.G;
+    B += other.B;
+    A += other.A;
+
+    return *this;
+}
+
+Pixel& Pixel::operator-=(const Pixel& other)
+{
+    R -= other.R;
+    G -= other.G;
+    B -= other.B;
+    A -= other.A;
+
+    return *this;
+}
+
+Pixel& Pixel::operator*=(const Pixel& other)
+{
+    R *= other.R;
+    G *= other.G;
+    B *= other.B;
+    A *= other.A;
+
+    return *this;
+}
+
+Pixel& Pixel::operator*=(float scalar)
+{
+    R *= scalar;
+    G *= scalar;
+    B *= scalar;
+    A *= scalar;
+
+    return *this;
+}
+
+Pixel& Pixel::operator/=(float scalar)
+{
+    R /= scalar;
+    G /= scalar;
+    B /= scalar;
+    A /= scalar;
+
+    return *this;
+}
+
+Pixel operator*(float scalar, const Pixel& pixel)
+{
+    return pixel * scalar;
+}

@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cmath>
 
-
+/*
 Filter& Filter::operator=(const Filter& filter)
 {
 	if (&filter != this)
@@ -129,4 +129,4 @@ void BetterGrayScale::Apply(Image& img, const Image& original) const
 			img.pixels[x][y] = Pixel(res, res, res);
 		}
 	}
-}
+}*/

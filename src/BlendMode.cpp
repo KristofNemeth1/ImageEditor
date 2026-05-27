@@ -1,75 +1,145 @@
 #include "BlendMode.hpp"
-#include <iostream>
 
-std::ostream& operator<<(std::ostream& os, const BlendMode& blendMode) 
+namespace BlendMode
 {
-	os << char(195) << "BlendMode:" << blendMode.GetName() << std::endl;
-	return os;
-}
+    float Clamp01(float value)
+    {
+        return std::clamp(value, 0.0f, 1.0f);
+    }
 
-BlendMode& BlendMode::operator= (const BlendMode& mode) 
-{
-	if (&mode != this)
-	{
-		inUse = mode.inUse;
-	}
-	return *this;
-}
+    Pixel NormalPixel(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity)
+    {
+        return bottom * (1.0f - opacity) +
+               top * opacity;
+    }
 
-/// @brief 
-/// @param top 
-/// @param bottom 
-/// @return 
-void Normal::Mix(Image& top, const Image& bottom) const
-{
-	int sizeX = top.GetX();
-	int sizeY = top.GetY();
+    Pixel MultiplyPixel(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity)
+    {
+        Pixel blended = top * bottom;
 
-	for (int x = 0; x < sizeX; x++)
-	{
-		for (int y = 0; y < sizeY; y++)
-		{
-			if (x < bottom.GetX() && y < bottom.GetY())
-			{
-				int r = bottom.pixels[x][y].GetR();
-				int g = bottom.pixels[x][y].GetG();
-				int b = bottom.pixels[x][y].GetB();
+        return NormalPixel(
+            blended,
+            bottom,
+            opacity);
+    }
 
-				if (r > 255) r = 255;
-				if (g > 255) g = 255;
-				if (b > 255) b = 255;
-				if (r < 0) r = 0;
-				if (g < 0) g = 0;
-				if (b < 0) b = 0;
-				top.pixels[x][y] = Pixel(r, g, b);
-			}
-		}
-	}
-}
+    Pixel AddPixel(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity)
+    {
+        Pixel blended(
+            Clamp01(top.GetR() + bottom.GetR()),
+            Clamp01(top.GetG() + bottom.GetG()),
+            Clamp01(top.GetB() + bottom.GetB()),
+            Clamp01(top.GetA() + bottom.GetA()));
 
-void Multiply::Mix(Image& top, const Image& bottom) const
-{
-	int sizeX = top.GetX();
-	int sizeY = top.GetY();
+        return NormalPixel(
+            blended,
+            bottom,
+            opacity);
+    }
 
-	for (int x = 0; x < sizeX; x++)
-	{
-		for (int y = 0; y < sizeY; y++)
-		{
-			if (x < bottom.GetX() && y < bottom.GetY())
-			{
-				int r = bottom.pixels[x][y].GetR() * top.pixels[x][y].GetR() / 255;
-				int g = bottom.pixels[x][y].GetG() * top.pixels[x][y].GetG() / 255;
-				int b = bottom.pixels[x][y].GetB() * top.pixels[x][y].GetB() / 255;
+    Pixel SubtractPixel(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity)
+    {
+        Pixel blended(
+            Clamp01(bottom.GetR() - top.GetR()),
+            Clamp01(bottom.GetG() - top.GetG()),
+            Clamp01(bottom.GetB() - top.GetB()),
+            Clamp01(bottom.GetA() - top.GetA()));
 
-				if (r > 255) r = 255;
-				if (g > 255) g = 255;
-				if (b > 255) b = 255;
-				if (r < 0) r = 0;
-				if (g < 0) g = 0;
-				if (b < 0) b = 0;
-				top.pixels[x][y] = Pixel(r, g, b);
-			}
-		}
-	}
+        return NormalPixel(
+            blended,
+            bottom,
+            opacity);
+    }
+
+    Pixel DividePixel(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity)
+    {
+        constexpr float epsilon = 0.00001f;
+
+        Pixel blended(
+            Clamp01(bottom.GetR() /
+                     std::max(top.GetR(), epsilon)),
+
+            Clamp01(bottom.GetG() /
+                     std::max(top.GetG(), epsilon)),
+
+            Clamp01(bottom.GetB() /
+                     std::max(top.GetB(), epsilon)),
+
+            bottom.GetA());
+
+        return NormalPixel(
+            blended,
+            bottom,
+            opacity);
+    }
+
+    Pixel NormalLogic::operator()(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity) const
+    {
+        return NormalPixel(
+            top,
+            bottom,
+            opacity);
+    }
+
+    Pixel MultiplyLogic::operator()(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity) const
+    {
+        return MultiplyPixel(
+            top,
+            bottom,
+            opacity);
+    }
+
+    Pixel DivideLogic::operator()(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity) const
+    {
+        return DividePixel(
+            top,
+            bottom,
+            opacity);
+    }
+
+    Pixel AddLogic::operator()(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity) const
+    {
+        return AddPixel(
+            top,
+            bottom,
+            opacity);
+    }
+
+    Pixel SubtractLogic::operator()(
+        const Pixel& top,
+        const Pixel& bottom,
+        float opacity) const
+    {
+        return SubtractPixel(
+            top,
+            bottom,
+            opacity);
+    }
 }

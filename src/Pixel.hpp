@@ -1,38 +1,50 @@
 #pragma once
 
-#define uchar unsigned char
+#pragma once
 
 class Pixel
 {
 protected:
-	uchar R;
-	uchar G;
-	uchar B;
+    float A;
+    float R;
+    float G;
+    float B;
+
 public:
+    Pixel(float r = 1.0f,
+          float g = 1.0f,
+          float b = 1.0f,
+          float a = 1.0f);
 
-	Pixel(uchar R = 255, uchar G = 255, uchar B = 255) :R(R), G(G), B(B) {}
-	Pixel(const Pixel& p1) :R(p1.R), G(p1.G), B(p1.B) {}
+    Pixel(const Pixel& other);
 
-	uchar GetR() const { return R; }
-	uchar GetG() const { return G; }
-	uchar GetB() const { return B; }
+    ~Pixel() = default;
 
-	void SetR(const uchar r) { R = r; }
-	void SetG(const uchar g) { G = g; }
-	void SetB(const uchar b) { B = b; }
+    float GetA() const;
+    float GetR() const;
+    float GetG() const;
+    float GetB() const;
 
-	Pixel operator+(const Pixel& p1);
-	Pixel& operator=(const Pixel& p1);
-	Pixel operator*(const Pixel& p1);
+    void SetA(float a);
+    void SetR(float r);
+    void SetG(float g);
+    void SetB(float b);
 
-	void normal();
+    Pixel operator+(const Pixel& other) const;
+    Pixel operator-(const Pixel& other) const;
+    Pixel operator*(const Pixel& other) const;
+
+    Pixel operator*(float scalar) const;
+    Pixel operator/(float scalar) const;
+
+    Pixel& operator=(const Pixel& other);
+
+    Pixel& operator+=(const Pixel& other);
+    Pixel& operator-=(const Pixel& other);
+    Pixel& operator*=(const Pixel& other);
+
+    Pixel& operator*=(float scalar);
+    Pixel& operator/=(float scalar);
 };
 
-class PixelA : public Pixel
-{
-	uchar A;
-public:
-	PixelA(uchar R = 255, uchar G = 255, uchar B = 255, uchar A = 255) :Pixel(R, G, B), A(A) {}
-	PixelA(const Pixel& p1, uchar A = 255) :Pixel(p1), A(A) {}
-};
-
+Pixel operator*(float scalar, const Pixel& pixel);

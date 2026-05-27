@@ -1,2 +1,16 @@
-build/*
+# CMake build outputs
+build/
+out/
+CMakeUserPresets.json
+compile_commands.json
+
+# Compiler and linker artifacts
+*.exe
+*.ilk
+*.obj
+*.pdb
+
+# Keep shared VS Code project tasks/debug config, ignore local settings.
 .vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
