@@ -9,47 +9,49 @@
         {
             "name": "base",
             "hidden": true,
-            "generator": "Ninja",
+            "generator": "Visual Studio 17 2022",
+            "architecture": "x64",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "installDir": "${sourceDir}/out/install/${presetName}",
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": true
+                "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+                "VCPKG_TARGET_TRIPLET": "x64-windows",
+                "CMAKE_TOOLCHAIN_FILE": "$env{USERPROFILE}/vcpkg/scripts/buildsystems/vcpkg.cmake"
             }
         },
         {
             "name": "debug",
             "displayName": "Debug",
-            "description": "Configure a debug build with Ninja.",
-            "inherits": "base",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            }
+            "description": "Configure a debug build with MSVC.",
+            "inherits": "base"
         },
         {
             "name": "release",
             "displayName": "Release",
-            "description": "Configure an optimized release build with Ninja.",
-            "inherits": "base",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            }
+            "description": "Configure an optimized release build with MSVC.",
+            "inherits": "base"
         }
     ],
+
     "buildPresets": [
         {
             "name": "debug",
             "displayName": "Build Debug",
             "configurePreset": "debug",
+            "configuration": "Debug",
             "targets": [
-                "Composer"
+                "Composer",
+                "ComposerTests"
             ]
         },
         {
             "name": "release",
             "displayName": "Build Release",
             "configurePreset": "release",
+            "configuration": "Release",
             "targets": [
-                "Composer"
+                "Composer",
+                "ComposerTests"
             ]
         }
     ]

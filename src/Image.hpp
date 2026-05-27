@@ -28,6 +28,18 @@ public:
 	};
 
 	Image(int sizeX = 0, int sizeY = 0, int channels = 3);
+
+	Image(const std::vector<Pixel>& pixels,
+          int sizeX,
+          int sizeY,
+          int channels = 4)
+        : pixels(pixels),
+          sizeX(sizeX),
+          sizeY(sizeY),
+          channels(channels)
+    {
+    }
+
 	Image(const Image& img);
 	Image(Image&& img) noexcept = default;
 	Image(const char* FileName);
@@ -95,5 +107,4 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& os, const Image& img);
-
 
